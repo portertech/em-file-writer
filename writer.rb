@@ -43,8 +43,16 @@ EM.run do
     data_path = File.join(File.dirname(__FILE__), "sherlock.txt")
     data = File.open(data_path, "r")
     write(file_path, data) do
-      puts "done!"
-      EM.stop
+      queue = EM::Queue.new
+      queue_worker = Proc.new do |data|
+        file_path = File.join("/tmp", "queued_#{pid}.txt")
+        write(file_path, data) do
+          puts "done!"
+          EM.stop
+        end
+      end
+      queue.pop(&queue_worker)
+      queue.push("bazqux")
     end
   end
 end
