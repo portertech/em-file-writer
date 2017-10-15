@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require "eventmachine"
 
 def write(file_path, data, chunk_size=65536)
